@@ -1,7 +1,7 @@
 {
-  "name": "react-webpack",
-  "version": "1.0.0",
-  "description": "A template for react projects that uses webpack for bundling and building",
+  "name": "lateral-player",
+  "version": "0.1.0",
+  "description": "A web based audio player written in React and Node",
   "main": "app/index.js",
   "scripts": {
     "dev": "webpack --mode development",
@@ -31,8 +31,6 @@
     "react": "^16.12.0",
     "react-auto-bind": "^0.4.2",
     "react-dom": "^16.12.0",
-    "react-router-dom": "^5.1.2",
-    "socket.io": "^2.3.0",
-    "socket.io-client": "^2.3.0"
+    "react-router-dom": "^5.1.2"
   }
 }

@@ -3,14 +3,12 @@ import { Switch, Route, Link } from 'react-router-dom'
 import {HomeComponent} from './home-component';
 import {NotFoundComponent} from './not-found-component';
 
-const io = require("socket.io-client");
 const autoBind = require("react-auto-bind");
 
 export class MainComponent extends React.Component {
     constructor(props) {
         super(props);
         autoBind(this);
-        this.socket = io();
     }
 
     render() {
@@ -23,7 +21,7 @@ export class MainComponent extends React.Component {
     }
 
     HomeComponentWithProps() {
-        return <HomeComponent socket={this.socket} />
+        return <HomeComponent />
     }
 
     NotFoundComponentWithProps() {
