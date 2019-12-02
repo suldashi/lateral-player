@@ -12,7 +12,17 @@ export class HomeComponent extends React.Component {
     }
 
     render() {
-        return <div>We made it home! Edit the <pre>/src/ui/home-component.jsx</pre> file to get started</div>;
+        return <div>
+            <form method="POST" action="/upload" enctype="multipart/form-data">
+                <div>
+                    <label>Select a file to upload:</label>
+                    <input type="file" name="track" />
+                </div>
+                <div>
+                    <input type="submit" value="Upload" />
+                </div>
+            </form>
+        </div>
     }
 
     async asyncPromiseTest() {
