@@ -19,7 +19,7 @@ const port = process.env.PORT || 8080;
 
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
-        cb(null, 'public/uploads/');
+        cb(null, path.resolve(__dirname,"..","public","uploads"));
     },
     filename: function(req, file, cb) {
         cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
@@ -44,9 +44,7 @@ function uploadHandler(req,res,next) {
 }
 
 app.post('/upload', uploadHandler, (req,res) => {
-	
 	res.send("upload complete");
-	
 });
 
 app.get("/users", async (req,res) => {
@@ -60,20 +58,16 @@ app.get("/files", async (req,res) => {
 });
 
 app.get("*",(req,res) => {
-	res.sendFile(path.resolve("public/index.html"));
+	res.sendFile(path.resolve("public","index.html"));
 });
-
-
 
 app.set("x-powered-by",false);
 
 server.listen(port);
 console.log("started on " + port);
-sequelize
-  .authenticate()
-  .then(() => {
-    console.log('Connection has been established successfully.');
-  })
-  .catch(err => {
-    console.error('Unable to connect to the database:', err);
-  });
+sequelize.authenticate().then(() => {
+	console.log('Connection has been established successfully.');
+})
+.catch(err => {
+	console.error('Unable to connect to the database:', err);
+});

@@ -1,0 +1,23 @@
+.uploader-container {
+    width: 300px;
+    .progress-bar {
+        height: 40px;
+        .progress-bar-display {
+            background-image: repeating-linear-gradient(-45deg, 
+            #2EB34F 0 20px, 
+            #50D17C 20px 40px);
+            background-attachment: fixed;
+            background-position: 0 0;
+            animation-name: moving-stripe;
+            animation-duration: 100s;
+            animation-timing-function: linear;
+            animation-iteration-count: infinite;
+            height: 100%;
+        }
+        @keyframes moving-stripe {
+            from {background-position: 0 0;}
+            to {background-position: 5656px 0}  //square root of the stripe length * animation duration
+        }
+    }
+}
+
