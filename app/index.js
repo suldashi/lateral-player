@@ -30,7 +30,10 @@ app.use('/public', express.static(path.resolve(__dirname,"..",'public')));
 
 let upload = multer({ storage: storage }).single('track');
 function uploadHandler(req,res,next) {
-	upload(req,res,(err) => {
+	req.on("end", () => {
+		console.log("upload completed successfully");
+	});
+	upload(req,res,(err) => {	
 		if(err) {
 			res.send(err);
 		}

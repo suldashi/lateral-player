@@ -34,24 +34,29 @@ export default class TrackUploader extends React.Component {
                 cancelCallback: request.cancelCallback
             });
             try {
-                await request.request;
+                let result = await request.request;
                 this.setState({
                     loading: false,
                     selectedFile: null,
                     uploadProgress: 0
-                })
+                });
             }
             catch(err) {
                 if(err.message === "cancel") {
-                    console.log("cancelled");
+                    this.setState({
+                        loading: false,
+                        selectedFile: null,
+                        uploadProgress: 0
+                    });
                 }
                 else {
-                    console.log("some kind of error");
+                    this.setState({
+                        loading: false,
+                        selectedFile: null,
+                        uploadProgress: 0
+                    });
                 }
             }
-        }
-        else {
-            console.log("no file selected to upload");
         }
     }
 
@@ -61,20 +66,30 @@ export default class TrackUploader extends React.Component {
         });
     }
 
+    cancelSelection() {
+        this.setState({
+            selectedFile: null
+        });
+    }
+
     uploadInterface() {
         if(this.state.loading) {
-            return <div className="progress-bar"><div className="progress-bar-display" style={{width:(this.state.uploadProgress*100)+"%"}}></div><button onClick={this.cancelUpload}>Cancel</button></div>;
+            return <div className="progress-bar">
+                <div className="progress-bar-display" style={{width:(this.state.uploadProgress*100)+"%"}}></div>
+                <button onClick={this.cancelUpload}>Cancel</button>
+            </div>;
         }
         else {
-            
             return <form onSubmit={this.handleSubmit}>
-                <div>
+                {!this.state.selectedFile?<div>
                     <label>Select a file to upload:</label>
                     <input onChange={this.onChangeHandler} type="file" name="track" />
-                </div>
-                <div>
+                </div>:""}
+                {this.state.selectedFile?<div>
+                    <label>File name: {this.state.selectedFile.name}</label>
+                    <button onClick={this.cancelSelection}>Cancel</button>
                     <input type="submit" value="Upload" />
-                </div>
+                </div>:""}
             </form>;
         }
     }
