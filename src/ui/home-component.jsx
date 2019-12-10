@@ -4,6 +4,6 @@ import TrackUploader from "./track-uploader/track-uploader";
 export class HomeComponent extends React.Component {
 
     render() {
-        return <div><TrackUploader /></div>
+        return <TrackUploader />
     }
 }
