@@ -1,5 +1,8 @@
 import React from "react";
 import autoBind from "react-auto-bind";
+import {Link} from "react-router-dom";
+import GlobalSearch from "../global-search/global-search";
+import FlexContainer from "../containers/flex-container";
 import "./sidebar.scss";
 
 export default class Sidebar extends React.Component {
@@ -9,6 +12,11 @@ export default class Sidebar extends React.Component {
     }
 
     render() {
-        return <div className="sidebar">this is the sidebar</div>
+        return <div className="sidebar">
+            <FlexContainer className="search-container"> 
+                <Link className="sidebar-logo" to="/"></Link>
+                <GlobalSearch />
+            </FlexContainer>
+        </div>
     }
 }
