@@ -1,7 +1,7 @@
 import React from "react";
 
 function ProppedSVG(props) {
-    return <svg className="i-search" viewBox="0 0 32 32" width={props.size=="large"?64:props.size=="medium"?48:props.size=="small"?32:props.size=="extra-small"?24:32} height={props.size=="large"?64:props.size=="medium"?48:props.size=="small"?32:props.size=="extra-small"?24:32} fill="none" stroke="currentcolor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2">
+    return <svg className="i-search" viewBox="0 0 32 32" width={props.size=="large"?64:props.size=="medium"?48:props.size=="small"?32:props.size=="extra-small"?24:32} height={props.size=="large"?64:props.size=="medium"?48:props.size=="small"?32:props.size=="extra-small"?24:32} fill="none" stroke={props.disabled?"grey":"white"} strokeLinecap="round" strokeLinejoin="round" strokeWidth="2">
         {props.children}
     </svg>
 }
@@ -482,53 +482,53 @@ export function Send(props) {
 
 export function Link(props) { 
     return <ProppedSVG {...props}>
-    <path d="M18 8 C18 8 24 2 27 5 30 8 29 12 24 16 19 20 16 21 14 17 M14 24 C14 24 8 30 5 27 2 24 3 20 8 16 13 12 16 11 18 15"></path>
+        <path d="M18 8 C18 8 24 2 27 5 30 8 29 12 24 16 19 20 16 21 14 17 M14 24 C14 24 8 30 5 27 2 24 3 20 8 16 13 12 16 11 18 15"></path>
     </ProppedSVG>; 
 }
 
 export function Code(props) { 
     return <ProppedSVG {...props}>
-    <path d="M10 9 L3 17 10 25 M22 9 L29 17 22 25 M18 7 L14 27"></path>
+        <path d="M10 9 L3 17 10 25 M22 9 L29 17 22 25 M18 7 L14 27"></path>
     </ProppedSVG>; 
 }
 
 export function Lock(props) { 
     return <ProppedSVG {...props}>
         <path d="M5 15 L5 30 27 30 27 15 Z M9 15 C9 9 9 5 16 5 23 5 23 9 23 15 M16 20 L16 23"></path>
-    <circle cx="16" cy="24" r="1"></circle>
+        <circle cx="16" cy="24" r="1"></circle>
     </ProppedSVG>; 
 }
 
 export function Unlock(props) { 
     return <ProppedSVG {...props}>
         <path d="M5 15 L5 30 27 30 27 15 Z M9 15 C9 7 9 3 16 3 23 3 23 8 23 9 M16 20 L16 23"></path>
-    <circle cx="16" cy="24" r="1"></circle>
+        <circle cx="16" cy="24" r="1"></circle>
     </ProppedSVG>; 
 }
 
 export function Bell(props) { 
     return <ProppedSVG {...props}>
-    <path d="M8 17 C8 12 9 6 16 6 23 6 24 12 24 17 24 22 27 25 27 25 L5 25 C5 25 8 22 8 17 Z M20 25 C20 25 20 29 16 29 12 29 12 25 12 25 M16 3 L16 6"></path>
+        <path d="M8 17 C8 12 9 6 16 6 23 6 24 12 24 17 24 22 27 25 27 25 L5 25 C5 25 8 22 8 17 Z M20 25 C20 25 20 29 16 29 12 29 12 25 12 25 M16 3 L16 6"></path>
     </ProppedSVG>; 
 }
 
 export function Alert(props) { 
     return <ProppedSVG {...props}>
-    <path d="M16 3 L30 29 2 29 Z M16 11 L16 19 M16 23 L16 25"></path>
+        <path d="M16 3 L30 29 2 29 Z M16 11 L16 19 M16 23 L16 25"></path>
     </ProppedSVG>; 
 }
 
 export function Info(props) { 
     return <ProppedSVG {...props}>
         <path d="M16 14 L16 23 M16 8 L16 10"></path>
-    <circle cx="16" cy="16" r="14"></circle>
+        <circle cx="16" cy="16" r="14"></circle>
     </ProppedSVG>; 
 }
 
 export function CreditCard(props) { 
     return <ProppedSVG {...props}>
         <path d="M2 7 L2 25 30 25 30 7 Z M5 18 L9 18 M5 21 L11 21"></path>
-    <path d="M2 11 L2 13 30 13 30 11 Z" fill="currentColor"></path>
+        <path d="M2 11 L2 13 30 13 30 11 Z" fill="currentColor"></path>
     </ProppedSVG>; 
 }
 
@@ -536,81 +536,81 @@ export function Cart(props) {
     return <ProppedSVG {...props}>
         <path d="M6 6 L30 6 27 19 9 19 M27 23 L10 23 5 2 2 2"></path>
         <circle cx="25" cy="27" r="2"></circle>
-    <circle cx="12" cy="27" r="2"></circle>
+        <circle cx="12" cy="27" r="2"></circle>
     </ProppedSVG>; 
 }
 
 export function Bag(props) { 
     return <ProppedSVG {...props}>
-    <path d="M5 9 L5 29 27 29 27 9 Z M10 9 C10 9 10 3 16 3 22 3 22 9 22 9"></path>
+        <path d="M5 9 L5 29 27 29 27 9 Z M10 9 C10 9 10 3 16 3 22 3 22 9 22 9"></path>
     </ProppedSVG>; 
 }
 
 export function Gift(props) { 
     return <ProppedSVG {...props}>
-    <path d="M4 14 L4 30 28 30 28 14 M2 9 L2 14 30 14 30 9 Z M16 9 C 16 9 14 0 8 3 2 6 16 9 16 9 16 9 18 0 24 3 30 6 16 9 16 9 M16 9 L16 30"></path>
+        <path d="M4 14 L4 30 28 30 28 14 M2 9 L2 14 30 14 30 9 Z M16 9 C 16 9 14 0 8 3 2 6 16 9 16 9 16 9 18 0 24 3 30 6 16 9 16 9 M16 9 L16 30"></path>
     </ProppedSVG>; 
 }
 
 export function External(props) { 
     return <ProppedSVG {...props}>
-    <path d="M14 9 L3 9 3 29 23 29 23 18 M18 4 L28 4 28 14 M28 4 L14 18"></path>
+        <path d="M14 9 L3 9 3 29 23 29 23 18 M18 4 L28 4 28 14 M28 4 L14 18"></path>
     </ProppedSVG>; 
 }
 
 export function Reload(props) { 
     return <ProppedSVG {...props}>
-    <path d="M29 16 C29 22 24 29 16 29 8 29 3 22 3 16 3 10 8 3 16 3 21 3 25 6 27 9 M20 10 L27 9 28 2"></path>
+        <path d="M29 16 C29 22 24 29 16 29 8 29 3 22 3 16 3 10 8 3 16 3 21 3 25 6 27 9 M20 10 L27 9 28 2"></path>
     </ProppedSVG>; 
 }
 
 export function Clipboard(props) { 
     return <ProppedSVG {...props}>
-    <path d="M12 2 L12 6 20 6 20 2 12 2 Z M11 4 L6 4 6 30 26 30 26 4 21 4"></path>
+        <path d="M12 2 L12 6 20 6 20 2 12 2 Z M11 4 L6 4 6 30 26 30 26 4 21 4"></path>
     </ProppedSVG>; 
 }
 
 export function Filter(props) { 
     return <ProppedSVG {...props}>
-    <path d="M2 5 C2 5 6 3 16 3 26 3 30 5 30 5 L19 18 19 27 13 30 13 18 2 5Z"></path>
+        <path d="M2 5 C2 5 6 3 16 3 26 3 30 5 30 5 L19 18 19 27 13 30 13 18 2 5Z"></path>
     </ProppedSVG>; 
 }
 
 export function Feed(props) { 
     return <ProppedSVG {...props}>
         <circle cx="6" cy="26" r="2" fill="currentColor"></circle>
-    <path d="M4 15 C11 15 17 21 17 28 M4 6 C17 6 26 15 26 28"></path>
+        <path d="M4 15 C11 15 17 21 17 28 M4 6 C17 6 26 15 26 28"></path>
     </ProppedSVG>; 
 }
 
 export function Moon(props) { 
     return <ProppedSVG {...props}>
-    <path d="M14 2C 9 2 3 7 3 15 3 23 9 29 17 29 25 29 30 23 30 18 19 25 7 13 14 2Z"></path>
+        <path d="M14 2C 9 2 3 7 3 15 3 23 9 29 17 29 25 29 30 23 30 18 19 25 7 13 14 2Z"></path>
     </ProppedSVG>; 
 }
 
 export function Microphone(props) { 
     return <ProppedSVG {...props}>
-    <path d="M16 2 C12 2 12 6 12 6 L12 16 C12 16 12 20 16 20 20 20 20 16 20 16 L20 6 C20 6 20 2 16 2 Z M8 17 C8 17 8 24 16 24 24 24 24 17 24 17 M13 29 L19 29 M16 24 L16 29"></path>
+        <path d="M16 2 C12 2 12 6 12 6 L12 16 C12 16 12 20 16 20 20 20 20 16 20 16 L20 6 C20 6 20 2 16 2 Z M8 17 C8 17 8 24 16 24 24 24 24 17 24 17 M13 29 L19 29 M16 24 L16 29"></path>
     </ProppedSVG>; 
 }
 
 export function Telephone(props) { 
     return <ProppedSVG {...props}>
         <path d="M3 12 C3 5 10 5 16 5 22 5 29 5 29 12 29 20 22 11 22 11 L10 11 C10 11 3 20 3 12 Z M11 14 C11 14 6 19 6 28 L26 28 C26 19 21 14 21 14 L11 14 Z"></path>
-    <circle cx="16" cy="21" r="4"></circle>
+        <circle cx="16" cy="21" r="4"></circle>
     </ProppedSVG>; 
 }
 
 export function Desktop(props) { 
     return <ProppedSVG {...props}>
-    <path d="M10 29 C10 29 10 24 16 24 22 24 22 29 22 29 L10 29 Z M2 6 L2 23 30 23 30 6 2 6 Z"></path>
+        <path d="M10 29 C10 29 10 24 16 24 22 24 22 29 22 29 L10 29 Z M2 6 L2 23 30 23 30 6 2 6 Z"></path>
     </ProppedSVG>; 
 }
 
 export function Mobile(props) { 
     return <ProppedSVG {...props}>
-    <path d="M21 2 L11 2 C10 2 9 3 9 4 L9 28 C9 29 10 30 11 30 L21 30 C22 30 23 29 23 28 L23 4 C23 3 22 2 21 2 Z M9 5 L23 5 M9 27 L23 27"></path>
+        <path d="M21 2 L11 2 C10 2 9 3 9 4 L9 28 C9 29 10 30 11 30 L21 30 C22 30 23 29 23 28 L23 4 C23 3 22 2 21 2 Z M9 5 L23 5 M9 27 L23 27"></path>
     </ProppedSVG>; 
 }
 
@@ -618,7 +618,7 @@ export function EllipsisHorizontal(props) {
     return <ProppedSVG {...props}>
         <circle cx="7" cy="16" r="2"></circle>
         <circle cx="16" cy="16" r="2"></circle>
-    <circle cx="25" cy="16" r="2"></circle>
+        <circle cx="25" cy="16" r="2"></circle>
     </ProppedSVG>; 
 }
 
@@ -626,6 +626,6 @@ export function EllipsisVertical(props) {
     return <ProppedSVG {...props}>
         <circle cx="16" cy="7" r="2"></circle>
         <circle cx="16" cy="16" r="2"></circle>
-    <circle cx="16" cy="25" r="2"></circle>
+        <circle cx="16" cy="25" r="2"></circle>
     </ProppedSVG>; 
 }
