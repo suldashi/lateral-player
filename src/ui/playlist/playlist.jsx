@@ -3,7 +3,12 @@ import FlexContainer from "../containers/flex-container";
 import "./playlist.scss";
 
 function PlaylistItem(props) {
-    return <div className="playlist-item">{props.track.name}</div>
+    return <FlexContainer className="playlist-item">
+        <div>
+            <div>{props.track.name}</div>
+            <div>{props.track.artist}</div>
+        </div>
+    </FlexContainer>;
 }
 
 export default function Playlist(props) {

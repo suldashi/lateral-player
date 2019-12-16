@@ -208,6 +208,9 @@ function init() {
 
       // WebAudio
       this.audioContext = audioContext;
+      this.analyserNode = this.audioContext.createAnalyser();
+      this.analyserNode.fftSize = 32;
+      this.analyserDataArray = new Uint8Array(this.analyserNode.frequencyBinCount);
       this.gainNode = this.audioContext.createGain();
       this.gainNode.gain.value = queue.state.volume;
       this.webAudioStartedPlayingAt = 0;
@@ -253,7 +256,8 @@ function init() {
             this.webAudioLoadingState = GaplessPlaybackLoadingState.LOADED;
 
             this.bufferSourceNode.buffer = this.audioBuffer = buffer;
-            this.bufferSourceNode.connect(this.gainNode);
+            this.bufferSourceNode.connect(this.analyserNode);
+            this.analyserNode.connect(this.gainNode);
 
             // try to preload next track
             this.queue.loadTrack(this.idx + 1);
@@ -374,7 +378,8 @@ function init() {
       this.bufferSourceNode = this.audioContext.createBufferSource();
 
       this.bufferSourceNode.buffer = this.audioBuffer;
-      this.bufferSourceNode.connect(this.gainNode);
+      this.bufferSourceNode.connect(this.analyserNode);
+      this.analyserNode.connect(this.gainNode);
       this.bufferSourceNode.onended = this.onEnded;
 
       this.webAudioStartedPlayingAt = this.audioContext.currentTime - to;
@@ -407,14 +412,14 @@ function init() {
 
       const isWithinLastTwentyFiveSeconds = (this.duration - this.currentTime) <= 25;
       const nextTrack = this.queue.nextTrack;
-
+      this.analyserNode.getByteTimeDomainData(this.analyserDataArray);
       // if in last 25 seconds and next track hasn't loaded yet
       // start loading next track's HTML5
       if (isWithinLastTwentyFiveSeconds && nextTrack && !nextTrack.isLoaded) {
         this.queue.loadTrack(this.idx + 1, true);
       }
 
-      this.queue.onProgress(this);
+      this.queue.onProgress(this, this.analyserDataArray.reduce((prev, curr) => prev + curr)/this.analyserNode.frequencyBinCount);
 
       // if we're paused, we still want to send one final onProgress call
       // and then bow out, hence this being at the end of the function
@@ -511,5 +516,5 @@ function init() {
   return Gapless;
 };
 
-let Gapless = init();
-export default Gapless;
+let GaplessInit = init;
+export default GaplessInit;

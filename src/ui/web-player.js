@@ -1,13 +1,18 @@
-import Gapless from "./gapless";
+import GaplessInit from "./gapless";
 
 export default class WebPlayer {
     constructor() {
+        this.Gapless = GaplessInit();
         this.tracks = [];
         this.onPlaylistChanged = null;
-        this.player = new Gapless.Queue();
-        this.player.onProgress = (track) => {
-            console.log(track.currentTime)
+        this.player = new this.Gapless.Queue();
+        this.player.onProgress = (track, nodeData) => {
+            console.log(track.currentTime, nodeData)
         };
+    }
+
+    set onProgress(callback) {
+        this.player.onProgress = callback;
     }
 
     addTrack(track) {

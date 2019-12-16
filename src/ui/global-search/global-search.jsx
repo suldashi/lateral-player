@@ -9,6 +9,6 @@ export default class GlobalSearch extends React.Component {
     }
 
     render() {
-        return <input type='text' />
+        return <input type='text' placeholder="Search for a track, artist, or album..." />
     }
 }

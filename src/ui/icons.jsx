@@ -1,7 +1,8 @@
 import React from "react";
 
 function ProppedSVG(props) {
-    return <svg className="i-search" viewBox="0 0 32 32" width={props.size=="large"?64:props.size=="medium"?48:props.size=="small"?32:props.size=="extra-small"?24:32} height={props.size=="large"?64:props.size=="medium"?48:props.size=="small"?32:props.size=="extra-small"?24:32} fill="none" stroke={props.disabled?"grey":"white"} strokeLinecap="round" strokeLinejoin="round" strokeWidth="2">
+    let strokeWeight = props.strokeWeight?props.strokeWeight:0;
+    return <svg className="i-search" viewBox="0 0 32 32" width={props.size=="large"?64:props.size=="medium"?48:props.size=="small"?32:props.size=="extra-small"?24:32} height={props.size=="large"?64:props.size=="medium"?48:props.size=="small"?32:props.size=="extra-small"?24:32} fill="none" stroke={props.disabled?"grey":strokeWeight?`rgb(${strokeWeight},${strokeWeight},${strokeWeight})`:"white"} strokeLinecap="round" strokeLinejoin="round" strokeWidth="2">
         {props.children}
     </svg>
 }

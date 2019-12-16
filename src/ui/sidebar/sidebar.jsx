@@ -4,7 +4,7 @@ import {Link} from "react-router-dom";
 import GlobalSearch from "../global-search/global-search";
 import Playlist from "../playlist/playlist";
 import FlexContainer from "../containers/flex-container";
-import {Play, Pause, Backwards, Forwards, Volume, Star} from "../icons";
+import {Play, Pause, Backwards, Forwards, Volume, Star, Music} from "../icons";
 import WebPlayer from "../web-player";
 import "./sidebar.scss";
 import Track from "../track";
@@ -15,10 +15,19 @@ export default class Sidebar extends React.Component {
         autoBind(this);
         this.state = {
             isPlaying: false,
-            tracks: []
+            tracks: [],
+            fftAverage: 128
         }
-        
+        this.player = null;
+    }
+
+    initPlayer() {
         this.player = new WebPlayer();
+        this.player.onProgress = (track, fftAverage) => {
+            this.setState({
+                fftAverage
+            });
+        };
         this.player.onPlaylistChanged = this.updatePlaylist;
     }
 
@@ -40,10 +49,16 @@ export default class Sidebar extends React.Component {
     }
 
     playerPrev(ev) {
+        if(!this.player) {
+            this.initPlayer();
+        }
         this.player.playPrevious();
     }
 
     playerPlay(ev) {
+        if(!this.player) {
+            this.initPlayer();
+        }
         this.setState({
             isPlaying: !this.state.isPlaying
         },() => {
@@ -52,22 +67,31 @@ export default class Sidebar extends React.Component {
     }
 
     playerNext(ev) {
+        if(!this.player) {
+            this.initPlayer();
+        }
         this.player.playNext();
     }
 
     playerVolume(ev) {
+        if(!this.player) {
+            this.initPlayer();
+        }
         this.player.seek(100);
     }
 
     playerAdd(ev) {
-        //this.player.addTrack(new Track("songName2", "artistName2", "albumName2", "/public/uploads/songId.mp3"));
-        //this.player.addTrack(new Track("songName2", "artistName2", "albumName2", "/public/uploads/songId2.mp3"));
+        if(!this.player) {
+            this.initPlayer();
+        }
+        //this.player.addTrack(new Track("FooTrack", "FooArtist", "FooAlbum", "/public/uploads/1.mp3"));
+        //this.player.addTrack(new Track("BarTrack", "BarArtist", "BarAlbum", "/public/uploads/2.mp3"));
     }
 
     render() {
         return <div className="sidebar">
             <FlexContainer className="search-container"> 
-                <Link className="sidebar-logo" to="/"></Link>
+                <Link className="sidebar-logo" to="/"><Music strokeWeight={this.state.fftAverage + 64} size="small" /></Link>
                 <GlobalSearch />
             </FlexContainer>
             <Playlist tracks={this.state.tracks} />
