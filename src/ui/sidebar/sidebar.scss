@@ -1,9 +1,9 @@
 .sidebar {
-    position: relative;
     width: 350px;
     height: 100%;
-    padding-bottom: 50px;
-    background: #3d3e3f;
+    display: flex;
+    flex-flow: column;
+    background: #333333;
     color: white;
     .search-container {
         height: 50px;
@@ -15,11 +15,8 @@
         }
     }
     .player-bar {
-        position: absolute;
         height: 50px;
-        width: 100%;
         background: #333333;
-        bottom: 0;
         .player-icon {
             cursor: pointer;
             width: 50px;
@@ -27,6 +24,10 @@
             display: flex;
             align-items: center;
             justify-content: center;
+        }
+        .player-icon-spacer {
+            width: 50px;
+            height: 50px;
         }
     }
 }
