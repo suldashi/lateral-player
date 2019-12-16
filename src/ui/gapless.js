@@ -412,7 +412,7 @@ function init() {
 
       const isWithinLastTwentyFiveSeconds = (this.duration - this.currentTime) <= 25;
       const nextTrack = this.queue.nextTrack;
-      this.analyserNode.getByteTimeDomainData(this.analyserDataArray);
+      this.analyserNode.getByteFrequencyData(this.analyserDataArray);
       // if in last 25 seconds and next track hasn't loaded yet
       // start loading next track's HTML5
       if (isWithinLastTwentyFiveSeconds && nextTrack && !nextTrack.isLoaded) {

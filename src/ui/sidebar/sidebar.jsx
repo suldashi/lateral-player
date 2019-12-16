@@ -16,7 +16,7 @@ export default class Sidebar extends React.Component {
         this.state = {
             isPlaying: false,
             tracks: [],
-            fftAverage: 128
+            fftAverage: 64
         }
         this.player = null;
     }
@@ -24,8 +24,9 @@ export default class Sidebar extends React.Component {
     initPlayer() {
         this.player = new WebPlayer();
         this.player.onProgress = (track, fftAverage) => {
+            console.log(fftAverage);
             this.setState({
-                fftAverage
+                fftAverage:fftAverage>64?fftAverage:64
             });
         };
         this.player.onPlaylistChanged = this.updatePlaylist;
@@ -84,14 +85,14 @@ export default class Sidebar extends React.Component {
         if(!this.player) {
             this.initPlayer();
         }
-        //this.player.addTrack(new Track("FooTrack", "FooArtist", "FooAlbum", "/public/uploads/1.mp3"));
-        //this.player.addTrack(new Track("BarTrack", "BarArtist", "BarAlbum", "/public/uploads/2.mp3"));
+        this.player.addTrack(new Track("FooTrack", "FooArtist", "FooAlbum", "/public/uploads/6.mp3"));
+        this.player.addTrack(new Track("BarTrack", "BarArtist", "BarAlbum", "/public/uploads/7.mp3"));
     }
 
     render() {
         return <div className="sidebar">
             <FlexContainer className="search-container"> 
-                <Link className="sidebar-logo" to="/"><Music strokeWeight={this.state.fftAverage + 64} size="small" /></Link>
+                <Link className="sidebar-logo" to="/"><Music strokeWeight={this.state.fftAverage} size="small" /></Link>
                 <GlobalSearch />
             </FlexContainer>
             <Playlist tracks={this.state.tracks} />
