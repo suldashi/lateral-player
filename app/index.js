@@ -4,6 +4,7 @@ const app = express();
 const server = require("http").createServer(app);
 const path = require("path");
 const multer = require("multer");
+const cors = require("cors");
 
 const Sequelize = require('sequelize');
 let sequelize = new Sequelize(config.database, config.username, config.password, {
@@ -46,7 +47,7 @@ function uploadHandler(req,res,next) {
 	});
 }
 
-app.post('/upload', uploadHandler, (req,res) => {
+app.post('/upload', cors(), uploadHandler, (req,res) => {
 	res.send("upload complete");
 });
 
@@ -58,6 +59,10 @@ app.get("/users", async (req,res) => {
 app.get("/files", async (req,res) => {
 	let files = await File.findAll({include:User});
 	res.send(files);
+});
+
+app.get("/experiment",(req,res) => {
+	res.sendFile(path.resolve("public","index2.html"));
 });
 
 app.get("*",(req,res) => {

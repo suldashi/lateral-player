@@ -16,7 +16,7 @@ export default class Sidebar extends React.Component {
         this.state = {
             isPlaying: false,
             tracks: [],
-            fftAverage: 64
+            fftAverage: 51
         }
         this.player = null;
     }
@@ -24,9 +24,8 @@ export default class Sidebar extends React.Component {
     initPlayer() {
         this.player = new WebPlayer();
         this.player.onProgress = (track, fftAverage) => {
-            console.log(fftAverage);
             this.setState({
-                fftAverage:fftAverage>64?fftAverage:64
+                fftAverage:fftAverage>51?fftAverage:51
             });
         };
         this.player.onPlaylistChanged = this.updatePlaylist;
@@ -85,8 +84,17 @@ export default class Sidebar extends React.Component {
         if(!this.player) {
             this.initPlayer();
         }
+        this.player.addTrack(new Track("FooTrack", "FooArtist", "FooAlbum", "/public/uploads/1.mp3"));
+        this.player.addTrack(new Track("FooTrack", "FooArtist", "FooAlbum", "/public/uploads/2.mp3"));
+        this.player.addTrack(new Track("FooTrack", "FooArtist", "FooAlbum", "/public/uploads/3.mp3"));
+        this.player.addTrack(new Track("FooTrack", "FooArtist", "FooAlbum", "/public/uploads/4.mp3"));
+        this.player.addTrack(new Track("FooTrack", "FooArtist", "FooAlbum", "/public/uploads/5.mp3"));
         this.player.addTrack(new Track("FooTrack", "FooArtist", "FooAlbum", "/public/uploads/6.mp3"));
-        this.player.addTrack(new Track("BarTrack", "BarArtist", "BarAlbum", "/public/uploads/7.mp3"));
+        this.player.addTrack(new Track("FooTrack", "FooArtist", "FooAlbum", "/public/uploads/7.mp3"));
+        this.player.addTrack(new Track("FooTrack", "FooArtist", "FooAlbum", "/public/uploads/8.mp3"));
+        this.player.addTrack(new Track("FooTrack", "FooArtist", "FooAlbum", "/public/uploads/9.mp3"));
+        this.player.addTrack(new Track("FooTrack", "FooArtist", "FooAlbum", "/public/uploads/10.mp3"));
+        this.player.addTrack(new Track("FooTrack", "FooArtist", "FooAlbum", "/public/uploads/11.mp3"));
     }
 
     render() {

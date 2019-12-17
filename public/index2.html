@@ -2,17 +2,20 @@
 <html>
 <head>
     <title>lateral player</title>
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap&subset=cyrillic,cyrillic-ext,greek,greek-ext,latin-ext" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="/public/css/style.css">
+    <script type="text/javascript" src="/public/js/lib.js"></script>
+    <script type="text/javascript" src="/public/js/xing.js"></script>
+    <script type="text/javascript" src="/public/js/id3v2.js"></script>
+    <script type="text/javascript" src="/public/js/main.js"></script>
 </head>
 <body>
 hello world
 <script>
-    const AudioContext = new (window.AudioContext || window.webkitAudioContext)();
+    var enc = new TextEncoder();
     class Player {
         constructor() {
             this.tracks = [];
             this.playing = false;
+            
         }
         addTrack(trackUrl) {
             this.tracks.push({
@@ -24,24 +27,53 @@ hello world
     class Track {
         constructor(url) {
             this.url = url;
-
-            this.audioBuffer = null;
-            this.bufferSourceNode = AudioContext.createBufferSource();
-            this.gainNode = AudioContext.createGain();
-
+            this.loader = new XMLHttpRequest();
+            this.chunks = [];
+            this.audioContext = null;
         }
 
-        load() {
-            fetch(this.url)
-                .then(res => res.arrayBuffer())
-                .then(res => AudioContext.decodeAudioData(res, buffer => {
-                    this.bufferSourceNode.buffer = this.audioBuffer = buffer;
+        async load() {
+            this.loader.open("GET", this.url);
+            this.loader.responseType = "arraybuffer";
+            this.loader.onprogress = async (ev) => {
+                if(!this.audioContext) {
+                    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    this.bufferSourceNode = this.audioContext.createBufferSource();
+                    this.gainNode = this.audioContext.createGain();
                     this.bufferSourceNode.connect(this.gainNode);
-                    this.gainNode.connect(AudioContext.destination);
+                    this.gainNode.connect(this.audioContext.destination);
+                    /*let audioBuffer = await this.audioContext.decodeAudioData(enc.encode(this.loader.response).buffer);
+                    this.bufferSourceNode.buffer = audioBuffer;
                     this.bufferSourceNode.start(0);
-                    })
-                );
+                    */
+                    //var mp3Tags = mp3Parser.readTags(new DataView(enc.encode(this.loader.response).buffer));
+                    //console.log(mp3Tags);
+                }
+            }
+            this.loader.onload = async (ev) => {
+                let audioBuffer = await this.audioContext.decodeAudioData(this.loader.response);
+                let channels = [];
+                for(var i=0;i<audioBuffer.numberOfChannels;i++) {
+                    channels.push(audioBuffer.getChannelData(i));
+                }
+                let combined = combineChannels(channels);
+                transferPCM(combined);
+            }
+            this.loader.send();
         }
+    }
+
+    function getChannels(audioBuffer) {}
+
+    function combineChannels(channelArray) {
+        let combined = new Float32Array(channelArray[0].length*channelArray.length);
+        for(var i=0;i<channelArray[0].length;i++) {
+            for(var j=0;j<channelArray.length;j++) {
+                combined[(i*2)+j] = channelArray[j][i];
+            }
+            
+        }
+        return combined;
     }
 
     let foo = new Track("/public/uploads/1.mp3");
