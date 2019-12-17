@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+<head>
+    <title>lateral player</title>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap&subset=cyrillic,cyrillic-ext,greek,greek-ext,latin-ext" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/public/css/style.css">
+</head>
+<body>
+hello world
+<script>
+    const AudioContext = new (window.AudioContext || window.webkitAudioContext)();
+    class Player {
+        constructor() {
+            this.tracks = [];
+            this.playing = false;
+        }
+        addTrack(trackUrl) {
+            this.tracks.push({
+                url:trackUrl
+            });
+        }
+    }
+
+    class Track {
+        constructor(url) {
+            this.url = url;
+
+            this.audioBuffer = null;
+            this.bufferSourceNode = AudioContext.createBufferSource();
+            this.gainNode = AudioContext.createGain();
+
+        }
+
+        load() {
+            fetch(this.url)
+                .then(res => res.arrayBuffer())
+                .then(res => AudioContext.decodeAudioData(res, buffer => {
+                    this.bufferSourceNode.buffer = this.audioBuffer = buffer;
+                    this.bufferSourceNode.connect(this.gainNode);
+                    this.gainNode.connect(AudioContext.destination);
+                    this.bufferSourceNode.start(0);
+                    })
+                );
+        }
+    }
+
+    let foo = new Track("/public/uploads/1.mp3");
+</script>
+</body>
+</html>
