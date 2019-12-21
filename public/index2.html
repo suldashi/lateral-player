@@ -2,15 +2,32 @@
 <html>
 <head>
     <title>lateral player</title>
-    <script type="text/javascript" src="/public/js/lib.js"></script>
-    <script type="text/javascript" src="/public/js/xing.js"></script>
-    <script type="text/javascript" src="/public/js/id3v2.js"></script>
-    <script type="text/javascript" src="/public/js/main.js"></script>
 </head>
 <body>
 hello world
 <script>
-    var enc = new TextEncoder();
+async function fetchChunk(url, opts) {
+  let onProgress = opts?opts.onProgress:undefined;
+  const response = await fetch(url, opts);
+  const reader = response.body.getReader();
+  let result = await reader.read();
+  let total = 0;
+
+  while (!result.done) {
+    const value = result.value;
+    total += value.length;
+    if(typeof onProgress === "function") {
+        onProgress(value);
+    }
+    // get the next result
+    result = await reader.read();
+  }
+
+  return total;
+}
+</script>
+
+<script>
     class Player {
         constructor() {
             this.tracks = [];
@@ -35,48 +52,23 @@ hello world
         async load() {
             this.loader.open("GET", this.url);
             this.loader.responseType = "arraybuffer";
-            this.loader.onprogress = async (ev) => {
+            this.loader.onload = async (ev) => {
                 if(!this.audioContext) {
                     this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
                     this.bufferSourceNode = this.audioContext.createBufferSource();
                     this.gainNode = this.audioContext.createGain();
                     this.bufferSourceNode.connect(this.gainNode);
                     this.gainNode.connect(this.audioContext.destination);
-                    /*let audioBuffer = await this.audioContext.decodeAudioData(enc.encode(this.loader.response).buffer);
+                    let audioBuffer = await this.audioContext.decodeAudioData(this.loader.response);
                     this.bufferSourceNode.buffer = audioBuffer;
                     this.bufferSourceNode.start(0);
-                    */
-                    //var mp3Tags = mp3Parser.readTags(new DataView(enc.encode(this.loader.response).buffer));
-                    //console.log(mp3Tags);
                 }
-            }
-            this.loader.onload = async (ev) => {
-                let audioBuffer = await this.audioContext.decodeAudioData(this.loader.response);
-                let channels = [];
-                for(var i=0;i<audioBuffer.numberOfChannels;i++) {
-                    channels.push(audioBuffer.getChannelData(i));
-                }
-                let combined = combineChannels(channels);
-                transferPCM(combined);
             }
             this.loader.send();
         }
     }
 
-    function getChannels(audioBuffer) {}
-
-    function combineChannels(channelArray) {
-        let combined = new Float32Array(channelArray[0].length*channelArray.length);
-        for(var i=0;i<channelArray[0].length;i++) {
-            for(var j=0;j<channelArray.length;j++) {
-                combined[(i*2)+j] = channelArray[j][i];
-            }
-            
-        }
-        return combined;
-    }
-
-    let foo = new Track("/public/uploads/1.mp3");
+    let foo = new Track("/public/uploads/1.opus");
 </script>
 </body>
 </html>

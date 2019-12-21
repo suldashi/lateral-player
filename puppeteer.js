@@ -52,8 +52,8 @@ async function decodeAudio(url) {
   return result;
 };
 
-decodeAudio("./public/uploads/1.mp3").then(x => {
-    fs.writeFile('./public/uploads/1.pcm', x, {encoding: 'base64'}, function(err) {
+decodeAudio("./public/uploads/11.mp3").then(x => {
+    fs.writeFile('./public/uploads/11.pcm', x, {encoding: 'base64'}, function(err) {
         console.log('File created');
     });
 });

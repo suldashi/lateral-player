@@ -4,7 +4,6 @@ const app = express();
 const server = require("http").createServer(app);
 const path = require("path");
 const multer = require("multer");
-const cors = require("cors");
 
 const Sequelize = require('sequelize');
 let sequelize = new Sequelize(config.database, config.username, config.password, {
@@ -47,7 +46,7 @@ function uploadHandler(req,res,next) {
 	});
 }
 
-app.post('/upload', cors(), uploadHandler, (req,res) => {
+app.post('/upload', uploadHandler, (req,res) => {
 	res.send("upload complete");
 });
 
