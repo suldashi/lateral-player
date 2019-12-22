@@ -7,6 +7,11 @@
 </head>
 <body>
 <div id="root"></div>
+<script>
+    function getNewOpusWorker() {
+        return new Worker('/public/js/opus-decoder-worker.js');
+    }
+</script>
 <script src="/public/js/ui.js"></script>
 </body>
 </html>
