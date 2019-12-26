@@ -22,3 +22,18 @@ body {
 	display: flex;
 	height: 100%;
 }
+
+.main-section {
+	flex-grow: 1;
+}
+
+.main-nav {
+	height: 50px;
+	line-height: 50px;
+	border-bottom: 1px solid #333333;
+	padding: 0 10px;
+}
+
+.main-nav-item {
+	padding: 0 10px;
+}

@@ -1,5 +1,4 @@
 import React from "react";
-import TrackUploader from "./track-uploader/track-uploader";
 import Track from "./player/track";
 import autoBind from "react-auto-bind"
 

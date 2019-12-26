@@ -8,6 +8,7 @@ export default class TrackUploader extends React.Component {
     constructor(props) {
         super(props);
         autoBind(this);
+        this.stopStateUpdates = false;
         this.state = {
             selectedFile: null,
             loading: false,
@@ -15,8 +16,15 @@ export default class TrackUploader extends React.Component {
         }
     }
 
+    componentWillUnmount() {
+        this.cancelUpload();
+    }
+
     cancelUpload() {
-        this.state.cancelCallback("cancel");
+        this.stopStateUpdates = true;
+        if(this.state.cancelCallback) {
+            this.state.cancelCallback("cancel");
+        }
     }
 
     async handleSubmit(ev) {
@@ -42,19 +50,21 @@ export default class TrackUploader extends React.Component {
                 });
             }
             catch(err) {
-                if(err.message === "cancel") {
-                    this.setState({
-                        loading: false,
-                        selectedFile: null,
-                        uploadProgress: 0
-                    });
-                }
-                else {
-                    this.setState({
-                        loading: false,
-                        selectedFile: null,
-                        uploadProgress: 0
-                    });
+                if(!this.stopStateUpdates) {
+                    if(err.message === "cancel") {
+                        this.setState({
+                            loading: false,
+                            selectedFile: null,
+                            uploadProgress: 0
+                        });
+                    }
+                    else {
+                        this.setState({
+                            loading: false,
+                            selectedFile: null,
+                            uploadProgress: 0
+                        });
+                    }
                 }
             }
         }
