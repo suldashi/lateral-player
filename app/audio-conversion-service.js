@@ -4,9 +4,6 @@ var stream = require('stream');
 var ogg = require("@suldashi/ogg");
 var opus = require("@suldashi/node-opus");
 var PCMf32toi16 = require("pcm-f32-to-i16");
-let opusEncoder = new opus.Encoder(48000, 2);
-var oggEncoder = new ogg.Encoder();
-let floatToInt = new PCMf32toi16();
 
 function packer(audioBuffer) {
     let chunks = Math.ceil(audioBuffer.length/1e6);
@@ -152,6 +149,9 @@ async function fileStreamToBuffer(fileStream) {
 
 module.exports = {
     convertToOpus: async (fileBuffer) => {
+        let opusEncoder = new opus.Encoder(48000, 2);
+        var oggEncoder = new ogg.Encoder();
+        let floatToInt = new PCMf32toi16();
         let decodedBuffer = await decodeAudio(fileBuffer);
         var bufferStream = new stream.PassThrough();
         bufferStream.pipe(floatToInt).pipe(opusEncoder).pipe(oggEncoder.stream());
