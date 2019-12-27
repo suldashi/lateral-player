@@ -3,9 +3,25 @@ const config = require("../config/config")[process.env.NODE_ENV];
 const app = express();
 const server = require("http").createServer(app);
 const path = require("path");
-const multer = require("multer");
-
+const fileUpload = require('express-fileupload');
+const audioConversionService = require("./audio-conversion-service");
+const uuid = require("uuid").v4;
 const Sequelize = require('sequelize');
+const fs = require("fs");
+
+function writeFilePromise(filePath, fileData) {
+    return new Promise((resolve,reject) => {
+        fs.writeFile(filePath, fileData, (err) => {
+            if(err) {
+                reject(err);
+            }
+            else {
+                resolve();
+            }
+        });
+    });
+}
+
 let sequelize = new Sequelize(config.database, config.username, config.password, {
 	host: config.host,
 	dialect: config.dialect,
@@ -17,37 +33,26 @@ const File = require("../models").File;
 
 const port = process.env.PORT || 8080;
 
-const storage = multer.diskStorage({
-    destination: function(req, file, cb) {
-        cb(null, path.resolve(__dirname,"..","public","uploads"));
-    },
-    filename: function(req, file, cb) {
-        cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
-    }
-});
-
 app.use('/public', express.static(path.resolve(__dirname,"..",'public')));
+app.use('/upload', fileUpload());
 
-let upload = multer({ storage: storage }).single('track');
-function uploadHandler(req,res,next) {
-	req.on("end", () => {
-		console.log("upload completed successfully");
-	});
-	upload(req,res,(err) => {	
-		if(err) {
-			res.send(err);
+app.post('/upload', async (req,res) => {
+	if(req.files.track) {
+		let fileBuffer = req.files.track.data;
+		try {
+			let opusBuffer = await audioConversionService.convertToOpus(fileBuffer);
+			await writeFilePromise("./public/uploads/"+uuid()+".opus", opusBuffer);
+			res.send("upload complete");
 		}
-		else if(!req.file) {
-			res.send("no file");
+		catch(err) {
+			console.log(err);
+			res.status(500).send(err);
 		}
-		else {
-			next();
-		}
-	});
-}
-
-app.post('/upload', uploadHandler, (req,res) => {
-	res.send("upload complete");
+	}
+	else {
+		res.status(400).send("no filed uploaded");
+	}
+	
 });
 
 app.get("/users", async (req,res) => {

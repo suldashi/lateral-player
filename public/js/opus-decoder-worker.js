@@ -26,7 +26,6 @@ onmessage = (message) => {
         let right = concatTypedArray(decodedSamples.map(x => x.right));
         postMessage({samplesDecoded:totalSamplesDecoded,left,right});
         decoder.free();
-        console.log("closed worker");
         close();
     }
 }
