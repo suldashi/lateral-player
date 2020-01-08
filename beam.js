@@ -4,8 +4,11 @@
     const beamcoder = require("beamcoder");
     console.log = oldConsole;
     const fs = require('fs');
+    let readStream = fs.createReadStream("hum.flac");
     let writeStream = fs.createWriteStream('decoded.raw');
-    let demuxer = await beamcoder.demuxer('hum.flac');
+    let demuxerStream = await beamcoder.demuxerStream({highwaterMark: 65536});
+    readStream.pipe(demuxerStream);
+    let demuxer = await demuxerStream.demuxer({name:"flac"});
     console.info(`Input sample rate: ${demuxer.streams[0].codecpar.sample_rate}`);
     console.info(`Input format: ${demuxer.streams[0].codecpar.format}`);
     console.info(`Input channels: ${demuxer.streams[0].codecpar.channels}`);
@@ -20,8 +23,8 @@
     while(packet != null) {
         try {
             let dec_result = await decoder.decode(packet);
-            for(var i in dec_result.frames.length) {
-                for(var j in dec_result.frames[i].data.length) {
+            for(var i in dec_result.frames) {
+                for(var j in dec_result.frames[i].data) {
                     writeStream.write(dec_result.frames[i].data[j]);
                 }
             }
@@ -32,8 +35,8 @@
         packet = await demuxer.read();
     }
     let frames = await decoder.flush();
-    if(frames.frames.length) {
-        for(var j in frames.frames[i].data.length) {
+    if(frames.frames.length > 0) {
+        for(var j in frames.frames[i].data) {
             writeStream.write(frames.frames[i].data[j]);
         }
     }

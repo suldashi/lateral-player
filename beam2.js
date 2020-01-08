@@ -1,6 +1,6 @@
-(async() => {
-    const beamcoder = require("beamcoder");
-    const fs = require("fs");
-    let filters = beamcoder.filters();
-    fs.writeFileSync("out.txt", Object.values(filters).map(x => x.description+"\n"));
-})()
+const fs = require("fs");
+let FlacToPCM = require("./FlacToPCM");
+let inFile = fs.createReadStream("andro.flac");
+let outFile = fs.createWriteStream("decoded2.raw");
+let flacPipe = new FlacToPCM();
+inFile.pipe(flacPipe).pipe(outFile);
