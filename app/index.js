@@ -39,9 +39,13 @@ app.use('/upload', fileUpload());
 app.post('/upload', async (req,res) => {
 	if(req.files.track) {
 		let fileBuffer = req.files.track.data;
+		let fileNameParts = req.files.track.name.split(".");
+		let extension = fileNameParts.length>1?"."+fileNameParts[fileNameParts.length-1]:"";
 		try {
-			let opusBuffer = await audioConversionService.convertToOpus(fileBuffer);
-			await writeFilePromise("./public/uploads/"+uuid()+".opus", opusBuffer);
+			let originalFileName = uuid()+extension;
+			let decodedFilename = uuid()+".pcm";
+			await writeFilePromise("./public/uploads/"+originalFileName, fileBuffer);
+			await audioConversionService.decodeAudioFile("./public/uploads/"+originalFileName, "./public/uploads"+decodedFilename);
 			res.send("upload complete");
 		}
 		catch(err) {

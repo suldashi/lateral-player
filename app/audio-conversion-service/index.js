@@ -4,6 +4,11 @@ var stream = require('stream');
 var ogg = require("@suldashi/ogg");
 var opus = require("@suldashi/node-opus");
 var PCMf32toi16 = require("pcm-f32-to-i16");
+let Duplex = require('stream').Duplex;  
+let oldConsole = console.log;
+console.log = () => {}; //suppress initialization GPL message
+const beamcoder = require("beamcoder");
+console.log = oldConsole;
 
 function packer(audioBuffer) {
     let chunks = Math.ceil(audioBuffer.length/1e6);
@@ -145,6 +150,45 @@ async function fileStreamToBuffer(fileStream) {
     });
 }
 
+async function decodeAudioFile(filePath) {
+    let data = {};
+    try {
+        let demuxer = await beamcoder.demuxer(filePath);
+        let decoder = beamcoder.decoder({ demuxer, stream_index: 0 });
+        try {
+            packet = await demuxer.read();
+        }
+        catch(err) {
+            console.error(err);
+        }
+        while(packet != null) {
+            try {
+                let dec_result = await decoder.decode(packet);
+                for(var i in dec_result.frames) {
+                    for(var j in dec_result.frames[i].data) {
+                        let data = dec_result.frames[i].data[j];
+                        console.log(data);
+                    }
+                }
+            }
+            catch(err) {
+                console.error(err);
+            }
+            packet = await demuxer.read();
+        }
+        let frames = await decoder.flush();
+        if(frames.frames.length > 0) {
+            for(var j in frames.frames[i].data) {
+                console.log(frames.frames[i].data[j]);
+            }
+        }
+    }
+    catch(err) {
+        data.err = err;
+    }
+    return data;
+}
+
 
 
 module.exports = {
@@ -158,5 +202,6 @@ module.exports = {
         bufferStream.end(decodedBuffer);
         let opusBuffer = await fileStreamToBuffer(oggEncoder);
         return opusBuffer;
-    }
+    },
+    decodeAudioFile
 }

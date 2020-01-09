@@ -4,7 +4,7 @@
     const beamcoder = require("beamcoder");
     console.log = oldConsole;
     const fs = require('fs');
-    let readStream = fs.createReadStream("hum.flac");
+    let readStream = fs.createReadStream("tt.flac");
     let writeStream = fs.createWriteStream('decoded.raw');
     let demuxerStream = await beamcoder.demuxerStream({highwaterMark: 65536});
     readStream.pipe(demuxerStream);
