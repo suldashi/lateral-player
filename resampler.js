@@ -27,7 +27,7 @@ decodeAudioFile("tt.flac", async (metadata) => {
             channelLayout: metadata.channelLayout
           }
         ],
-        filterSpec: `aresample=isr=${metadata.sampleRate}:osr=${outSampleRate}:precision=28:async=1000, aformat=sample_fmts=${outFormat}:channel_layouts=${metadata.channelLayout}`
+        filterSpec: `aresample=isr=${metadata.sampleRate}:osr=${outSampleRate}:async=1000, aformat=sample_fmts=${outFormat}:channel_layouts=${metadata.channelLayout}`
       });
 },async (frameData) => {
     let filteredData = await filterer.filter([frameData]);
