@@ -7,6 +7,7 @@ console.log = oldConsole;
 let filterer = null;
 let outSampleRate = 48000;
 let outFormat = "s16";
+let bytesPerSample = 2;
 let outFile = fs.createWriteStream("resampled.raw");
 
 decodeAudioFile("tt.flac", async (metadata) => {
@@ -32,8 +33,7 @@ decodeAudioFile("tt.flac", async (metadata) => {
 },async (frameData) => {
     let filteredData = await filterer.filter([frameData]);
     let rawData = filteredData[0].frames[0].data[0];
-    let cutData = Buffer.alloc(filteredData[0].frames[0].nb_samples*2*filteredData[0].frames[0].channels);
-    rawData.copy(cutData, 0, 0, cutData.length);
+    let cutData = rawData.slice(0, filteredData[0].frames[0].nb_samples*bytesPerSample*filteredData[0].frames[0].channels);
     outFile.write(cutData);
 });
 
