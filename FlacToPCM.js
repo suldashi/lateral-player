@@ -17,7 +17,7 @@ class FlacToPCM extends Transform  {
             this.sourceStream.unpipe(this);
             this.demuxerStream = beamcoder.demuxerStream({highwaterMark: 65536});
             this.sourceStream.pipe(this.demuxerStream);
-            this.demuxer = await this.demuxerStream.demuxer({name:"flac"});
+            this.demuxer = await this.demuxerStream.demuxer({name:"mp3"});
             this.sampleRate = this.demuxer.streams[0].codecpar.sample_rate;
             this.inputFormat = this.demuxer.streams[0].codecpar.format;
             this.inputChannels = this.demuxer.streams[0].codecpar.channels;
@@ -38,15 +38,7 @@ class FlacToPCM extends Transform  {
                     for(var i in dec_result.frames) {
                         for(var j in dec_result.frames[i].data) {
                             let data = dec_result.frames[i].data[j];
-                            if(data.length !== 32768) {
-                                let newBuf = Buffer.alloc(data.length);
-                                data.copy(newBuf, 0, 0, newBuf.length);
-                                this.push(newBuf);
-                            }
-                            else {
-                                this.push(data);
-                            }
-                            
+                            this.push(data);
                         }
                     }
                 }

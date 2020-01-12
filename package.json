@@ -2,7 +2,7 @@
   "name": "lateral-player",
   "version": "0.1.0",
   "description": "A web based audio player written in React and Node",
-  "main": "app/index.js",
+  "main": "mp3.js",
   "scripts": {
     "dev": "webpack --mode development",
     "prod": "webpack --mode production",

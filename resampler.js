@@ -10,7 +10,7 @@ let outFormat = "s16";
 let bytesPerSample = 2;
 let outFile = fs.createWriteStream("resampled.raw");
 
-decodeAudioFile("tt.flac", async (metadata) => {
+decodeAudioFile("tri.mp3", async (metadata) => {
     filterer = await beamcoder.filterer({
         filterType: 'audio',
         inputParams: [
@@ -32,9 +32,16 @@ decodeAudioFile("tt.flac", async (metadata) => {
       });
 },async (frameData) => {
     let filteredData = await filterer.filter([frameData]);
-    let rawData = filteredData[0].frames[0].data[0];
-    let cutData = rawData.slice(0, filteredData[0].frames[0].nb_samples*bytesPerSample*filteredData[0].frames[0].channels);
-    outFile.write(cutData);
+    for(var i in filteredData) {
+        for(var j in filteredData[i].frames) {
+            for(var k in filteredData[i].frames[j].data) {
+                let rawData = filteredData[i].frames[j].data[k];
+                let cutData = rawData.slice(0, filteredData[i].frames[j].nb_samples*bytesPerSample*filteredData[i].frames[j].channels);
+                outFile.write(cutData);
+            }
+        }
+    }
+    
 });
 
 
@@ -43,7 +50,7 @@ decodeAudioFile("tt.flac", async (metadata) => {
     let data = {};
     try {
         let demuxer = await beamcoder.demuxer(filePath);
-        let decoder = beamcoder.decoder({ demuxer, stream_index: 0 });
+        let decoder = beamcoder.decoder({ demuxer, stream_index: 0, request_sample_fmt: outFormat });
         await onInputMetadata({
             sampleRate: decoder.sample_rate,
             channels: decoder.channels,
