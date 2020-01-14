@@ -1,16 +1,14 @@
 const fs = require("fs");
-let oldConsole = console.log;
-console.log = () => {}; //suppress initialization GPL message
 const beamcoder = require("beamcoder");
-console.log = oldConsole;
+const getWavHeader = require("./get-wav-header");
 
-let filterer = null;
 let outSampleRate = 48000;
-let outFormat = "s16";
-let bytesPerSample = 2;
-let outFile = fs.createWriteStream("resampled.raw");
+let outFormat = "s32";
+let bytesPerSample = 4;
+let outFile = fs.createWriteStream("out.wav");
 
-decodeAudioFile("tri.mp3", async (metadata) => {
+decodeAudioFile("tt.flac", async (metadata) => {
+    outFile.write(getWavHeader(metadata.sampleRate, metadata.channels, bytesPerSample));
     filterer = await beamcoder.filterer({
         filterType: 'audio',
         inputParams: [
@@ -28,29 +26,22 @@ decodeAudioFile("tri.mp3", async (metadata) => {
             channelLayout: metadata.channelLayout
           }
         ],
-        filterSpec: `aresample=isr=${metadata.sampleRate}:osr=${outSampleRate}:async=1000, aformat=sample_fmts=${outFormat}:channel_layouts=${metadata.channelLayout}`
+        filterSpec: `aresample=isr=${metadata.sampleRate}:osr=${outSampleRate}:async=1, aformat=sample_fmts=${outFormat}:channel_layouts=${metadata.channelLayout}`
       });
-},async (frameData) => {
-    let filteredData = await filterer.filter([frameData]);
-    for(var i in filteredData) {
-        for(var j in filteredData[i].frames) {
-            for(var k in filteredData[i].frames[j].data) {
-                let rawData = filteredData[i].frames[j].data[k];
-                let cutData = rawData.slice(0, filteredData[i].frames[j].nb_samples*bytesPerSample*filteredData[i].frames[j].channels);
-                outFile.write(cutData);
-            }
-        }
+}, async (frameData) => {
+    for(var k in frameData.data) {
+        let rawData = frameData.data[k];
+        let cutData = rawData.slice(0, frameData.nb_samples*bytesPerSample*frameData.channels);
+        outFile.write(cutData);
     }
-    
 });
 
-
-  
-  async function decodeAudioFile(filePath, onInputMetadata, onFrame) {
+async function decodeAudioFile(filePath, onInputMetadata, onData) {
     let data = {};
     try {
         let demuxer = await beamcoder.demuxer(filePath);
-        let decoder = beamcoder.decoder({ demuxer, stream_index: 0, request_sample_fmt: outFormat });
+        let decoder = beamcoder.decoder({ demuxer, stream_index: 0});
+        decoder.request_sample_fmt = outFormat;
         await onInputMetadata({
             sampleRate: decoder.sample_rate,
             channels: decoder.channels,
@@ -68,10 +59,8 @@ decodeAudioFile("tri.mp3", async (metadata) => {
             try {
                 let dec_result = await decoder.decode(packet);
                 for(var i in dec_result.frames) {
-                    for(var j in dec_result.frames[i].data) {
-                        let data = dec_result.frames[i];
-                        onFrame(data);
-                    }
+                    let currentFrame = dec_result.frames[i];
+                    onData(currentFrame);
                 }
             }
             catch(err) {
@@ -81,13 +70,12 @@ decodeAudioFile("tri.mp3", async (metadata) => {
         }
         let frames = await decoder.flush();
         if(frames.frames.length > 0) {
-            for(var j in frames.frames[i].data) {
-                onFrame(frames.frames[i]);
-            }
+            onData(frames.frames[i]);
         }
     }
     catch(err) {
         data.err = err;
+        console.error(err);
     }
     return data;
 }
