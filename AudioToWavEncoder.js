@@ -6,18 +6,17 @@ console.log = oldConsole;
 
 const PassThrough = require("stream").PassThrough;
 
-class FlacToWav extends Transform  {
+class AudioToWavEncoder extends Transform  {
 
     constructor() {
         super();
-        this.outSampleFormat = "s16";
         this.pt = new PassThrough();
         this.on("pipe", async (sourceStream) => {
             this.sourceStream = sourceStream;
             this.sourceStream.unpipe(this);
             this.demuxerStream = beamcoder.demuxerStream({highwaterMark: 65536});
             this.sourceStream.pipe(this.demuxerStream);
-            this.demuxer = await this.demuxerStream.demuxer({name:"mp3"});
+            this.demuxer = await this.demuxerStream.demuxer({name:"mp3"});  //works even if file is of other type
             this.sampleRate = this.demuxer.streams[0].codecpar.sample_rate;
             this.inputFormat = this.demuxer.streams[0].codecpar.format;
             this.inputChannels = this.demuxer.streams[0].codecpar.channels;
@@ -27,7 +26,6 @@ class FlacToWav extends Transform  {
             console.info(`Input channels: ${this.inputChannels}`);
             this.push(this.generateWavHeader(this.sampleRate, this.inputChannels, this.getBytesPerSample(this.inputFormat)));
             this.decoder = beamcoder.decoder({demuxer: this.demuxer, stream_index: 0});
-            this.decoder.request_sample_fmt = this.outSampleFormat;
             let packet = {};
             try {
                 packet = await this.demuxer.read();
@@ -39,7 +37,7 @@ class FlacToWav extends Transform  {
                 try {
                     let dec_result = await this.decoder.decode(packet);
                     for(var i in dec_result.frames) {
-                        for(var j in dec_result.frames[i].data) {
+                         for(var j in dec_result.frames[i].data) {
                             let rawData = dec_result.frames[i].data[j];
                             let cutData = rawData.slice(0, dec_result.frames[i].nb_samples*this.bytesPerSample*dec_result.frames[i].channels);
                             this.push(cutData);
@@ -57,6 +55,7 @@ class FlacToWav extends Transform  {
                     this.push(frames.frames[i].data[j]);
                 }
             }
+            this.end();
         })
     }
 
@@ -128,4 +127,4 @@ class FlacToWav extends Transform  {
     }
 }
 
-module.exports = FlacToWav;
+module.exports = AudioToWavEncoder;

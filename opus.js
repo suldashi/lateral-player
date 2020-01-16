@@ -1,11 +1,9 @@
 const fs = require("fs");
 var ogg = require("@suldashi/ogg");
 var opus = require("@suldashi/node-opus");
-var PCMf32toi16 = require("pcm-f32-to-i16");
 let opusEncoder = new opus.Encoder(48000, 2);
 var oggEncoder = new ogg.Encoder();
-let floatToInt = new PCMf32toi16();
-var readStream = fs.createReadStream('./public/uploads/7.raw');
-var writeStream = fs.createWriteStream('./public/uploads/7.opus');
-readStream.pipe(floatToInt).pipe(opusEncoder).pipe(oggEncoder.stream());
+var readStream = fs.createReadStream('tri.raw');
+var writeStream = fs.createWriteStream('tri.opus');
+readStream.pipe(opusEncoder).pipe(oggEncoder.stream());
 oggEncoder.pipe(writeStream);
